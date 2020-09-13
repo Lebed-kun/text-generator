@@ -4,15 +4,15 @@
 
 Any text is valid TGT sequence. Anything enclosed between "{{" and "}}", or "{%" and "%}" however have special parsing rules (microgrammar):
 
-PRINT_STATEMENT := '{{' PRINT_EXPRESSION '}}'
-PRINT_EXPRESSION := PRINT_TOKEN '\s' PRINT_EXPRESSION | PRINT_TOKEN
-PRINT_TOKEN := '(\$|\@)?[A-Za-z0-9]+' | '\".*\"'
+* PRINT_STATEMENT := '{{' PRINT_EXPRESSION '}}'
+* PRINT_EXPRESSION := PRINT_TOKEN '\s' PRINT_EXPRESSION | PRINT_TOKEN
+* PRINT_TOKEN := '(\$|\@)?[A-Za-z0-9]+' | '\".*\"'
 
-EXECUTE_STATEMENT := '{%' EXECUTE_EXPRESSION '%}'
-EXECUTE_EXPRESSION := EXECUTE_COMMAND '\s' EXECUTE_ARGS | EXECUTE_COMMAND
-EXECUTE_COMMAND := '(\$|\@)?[A-Za-z0-9]+'
-EXECUTE_ARGS := EXECUTE_ARG '\s' EXECUTE_ARGS | EXECUTE_ARG
-EXECUTE_ARG := '(\$|\@)?[A-Za-z0-9]+' | '\".*\"'
+* EXECUTE_STATEMENT := '{%' EXECUTE_EXPRESSION '%}'
+* EXECUTE_EXPRESSION := EXECUTE_COMMAND '\s' EXECUTE_ARGS | EXECUTE_COMMAND
+* EXECUTE_COMMAND := '(\$|\@)?[A-Za-z0-9]+'
+* EXECUTE_ARGS := EXECUTE_ARG '\s' EXECUTE_ARGS | EXECUTE_ARG
+* EXECUTE_ARG := '(\$|\@)?[A-Za-z0-9]+' | '\".*\"'
 
 Commands and arguments prefixed with '$' are referred to local context, with '@' are referred to global context. 
 Commands not starting with both symbols are referred as standart. Arguments not starting with both symbols
@@ -22,27 +22,27 @@ are just plain string literals.
 
 These registers are used in the diagram below to simplify representation of state machine flow:
 
-%IN - input stream/current input character;
-%OUT - output stream/current output character;
-%TOK - current token stream;
-%PRTQ - printing submachine stream/current printing submachine character;
-%EXEQ - executing submachine stream/current executing submachine character;
-%CMST - command stack;
-%CMD - current command;
-%ARST - arguments stack;
-%ARGS - current arguments stream;
-%CMR - current return result of command;
+* %IN - input stream/current input character;
+* %OUT - output stream/current output character;
+* %TOK - current token stream;
+* %PRTQ - printing submachine stream/current printing submachine character;
+* %EXEQ - executing submachine stream/current executing submachine character;
+* %CMST - command stack;
+* %CMD - current command;
+* %ARST - arguments stack;
+* %ARGS - current arguments stream;
+* %CMR - current return result of command;
 
 ## Microcommands
 
-PUSH %R1 %R2 - push value of R2 to R1 sequence;
-CLR %R1 - reset register R1;
-NOP - no operation;
-USEL %R1 %R2 - push value of R2 using local context to R1 sequence;
-USEC %R1 %R2 - push value of R2 using global context to R1 sequence;
-POP %R1 %R2 - pop last value from R2 sequence to R1;
-POPA %R1 %R2 %R3 - pop arguments from R2 to R1 according to command R3;
-CALL %R1 %R2 - call command from R1 with values from R2;
+* PUSH %R1 %R2 - push value of R2 to R1 sequence;
+* CLR %R1 - reset register R1;
+* NOP - no operation;
+* USEL %R1 %R2 - push value of R2 using local context to R1 sequence;
+* USEC %R1 %R2 - push value of R2 using global context to R1 sequence;
+* POP %R1 %R2 - pop last value from R2 sequence to R1;
+* POPA %R1 %R2 %R3 - pop arguments from R2 to R1 according to command R3;
+* CALL %R1 %R2 - call command from R1 with values from R2;
 
 ## Diagram of state machine
 
@@ -50,41 +50,27 @@ CALL %R1 %R2 - call command from R1 with values from R2;
 
 ## Standart commands for executor
 
-define X Y - define variable with X with value Y;
-
-assign X Y - assing value Y to variable X;
-
-prepend X - change output stream from document to variable X such that following text
+* define X Y - define variable with X with value Y;
+* assign X Y - assing value Y to variable X;
+* prepend X - change output stream from document to variable X such that following text
 will be added to beginning of X;
-
-endprepend - change output stream back to document;
-
-append X - change output stream from document to variable X such that following text
+* endprepend - change output stream back to document;
+* append X - change output stream from document to variable X such that following text
 will be added to end of X;
-
-endappend - change output stream back to document;
-
-while X - change output stream to void if X is false, and push pointer of current
+* endappend - change output stream back to document;
+* while X - change output stream to void if X is false, and push pointer of current
 input position (before execution block) to stack;
-
-endwhile - pop pointer of current input position from stack, and go back to it
+* endwhile - pop pointer of current input position from stack, and go back to it
 if output stream is not void or change output stream back to previous
 if outstream is void;
-
-each X -  change output stream to void if X is empty, and push pointer of current
+* each X -  change output stream to void if X is empty, and push pointer of current
 input position (before execution block) to stack;
-
-endeach - pop pointer of current input position from stack, and go back to it
+* endeach - pop pointer of current input position from stack, and go back to it
 if output stream is not void or change output stream back to previous
 if outstream is void;
-
-noprint - change output stream to void;
-
-endnoprint - change output stream to previous;
-
-if X -  change output stream to void if X is false;
-
-else - change output stream to void if outstream is not void, or change outstream
+* noprint - change output stream to void;
+* endnoprint - change output stream to previous;
+* if X -  change output stream to void if X is false;
+* else - change output stream to void if outstream is not void, or change outstream
 back to previous if outstream is void;
-
-endif - change output stream back to previous if outstream is void;
+* endif - change output stream back to previous if outstream is void;
