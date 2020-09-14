@@ -1,10 +1,10 @@
 import Store from "./store";
 import { LocalContext, GlobalContext } from "./contexts";
 
-type Microcommand = (
-    registers: Store,
-    localContext: LocalContext,
+type Predicate = (
+    registers: Store, 
+    localContext: LocalContext, 
     globalContext: GlobalContext
-) => void;
+) => boolean;
 
-export default Microcommand;
+export default Predicate;
