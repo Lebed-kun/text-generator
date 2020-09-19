@@ -1,8 +1,11 @@
 import State from "./state";
 import Transition from "./transition";
 
-type Automata = {
-    [state: number]: Transition[]
+interface Automata {
+    startState: State;
+    transitions: {
+        [state: number]: Transition[]
+    }
 };
 
 export default Automata;
