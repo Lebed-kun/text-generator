@@ -1,5 +1,3 @@
-import Microcommand from "./microcommand";
-
-type Instruction = Microcommand[];
+type Instruction = number[];
 
 export default Instruction;

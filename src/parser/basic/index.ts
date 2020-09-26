@@ -6,6 +6,9 @@ import Store from "./store";
 import { LocalContext, GlobalContext } from "./contexts";
 import Instruction from "./instruction";
 import Transition from "./transition";
+import TransitionNetwork from "./transition-network";
+import Processor from "./processor";
+import Automata from "./automata";
 
 export {
     Register,
@@ -16,5 +19,8 @@ export {
     LocalContext,
     GlobalContext,
     Instruction,
-    Transition
+    Transition,
+    TransitionNetwork,
+    Processor,
+    Automata,
 };
