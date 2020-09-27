@@ -1,15 +1,16 @@
 import { 
     Store, 
     LocalContext, 
-    GlobalContext, 
+    GlobalContext,
+    StaticContext, 
     Register,
     LOCAL_CTX_LITERAL,
     GLOBAL_CTX_LITERAL, 
     Microcommand,
+    Command,
 } from "../../basic";
 
 import { RegisterNames } from "../registers/types";
-import { Command } from "../types";
 
 const _push = (sequence: string | string[], argument: string): string | string[] => {
     if (typeof sequence === "string") {
@@ -24,7 +25,8 @@ export const push: Microcommand = (
     registerNames: number[],
     registerStore: Store,
     localContext: LocalContext,
-    globalContext: GlobalContext
+    globalContext: GlobalContext,
+    _: StaticContext,
 ) => {
     const sequenceRegister: Register<string | string[]> = registerStore[registerNames[0]];
     const sequence = sequenceRegister.get()!;
@@ -60,7 +62,8 @@ export const clear: Microcommand = (
     registerNames: number[],
     registerStore: Store,
     _1: LocalContext,
-    _2: GlobalContext
+    _2: GlobalContext,
+    _3: StaticContext,
 ) => {
     const register: Register<any> = registerStore[registerNames[0]];
     register.reset();
@@ -70,7 +73,8 @@ export const pushUsingLocalCtx = (
     registerNames: number[],
     registerStore: Store,
     localContext: LocalContext,
-    _: GlobalContext
+    _1: GlobalContext,
+    _2: StaticContext,
 ) => {
     const sequenceRegister: Register<string | string[]> = registerStore[registerNames[0]];
     const sequence = sequenceRegister.get()!;
@@ -86,8 +90,9 @@ export const pushUsingLocalCtx = (
 export const pushUsingGlobalCtx: Microcommand = (
     registerNames: number[],
     registerStore: Store,
-    _: LocalContext,
-    globalContext: GlobalContext
+    _1: LocalContext,
+    globalContext: GlobalContext,
+    _2: StaticContext,
 ) => {
     const sequenceRegister: Register<string | string[]> = registerStore[registerNames[0]];
     const sequence = sequenceRegister.get()!;
@@ -112,7 +117,8 @@ export const pop: Microcommand = (
     registerNames: number[],
     registerStore: Store,
     _1: LocalContext,
-    _2: GlobalContext
+    _2: GlobalContext,
+    _3: StaticContext,
 ) => {
     const storeRegister: Register<string> = registerStore[registerNames[0]];
     
@@ -128,12 +134,33 @@ export const popArguments: Microcommand = (
     registerNames: number[],
     registerStore: Store,
     localContext: LocalContext,
-    globalContext: GlobalContext
+    globalContext: GlobalContext,
+    staticContext: StaticContext,
 ) => {
     const commandRegister: Register<string> = registerStore[registerNames[2]];
-    const command = commandRegister.get()!;
+    const rawCommandName = commandRegister.get()!;
 
-    const args: string[] = [];
+    if (rawCommandName.startsWith(LOCAL_CTX_LITERAL)) {
+        throw new Error("Runtime defined routines aren't supported now");
+    }
 
+    const rom = rawCommandName.startsWith(GLOBAL_CTX_LITERAL) ? globalContext : staticContext;
+    const commandName = rawCommandName.startsWith(GLOBAL_CTX_LITERAL) ? rawCommandName.slice(1) : rawCommandName;
+    const command = rom[commandName];
 
+    const argsStackRegister: Register<string[]> = registerStore[registerNames[1]];
+    const argsStack = argsStackRegister.get()!;
+    
+    const argsRegister: Register<string[]> = registerStore[registerNames[0]];
+    const args = argsRegister.get()!;
+
+    if (typeof command === "string" || typeof command === "function") {
+        throw new Error("Invalid command type");
+    } else {
+        for (let i = 0; i < command.argsCount; i++) {
+            args.push(argsStack.pop()!);
+        }
+
+        argsRegister.set(args);
+    }
 }

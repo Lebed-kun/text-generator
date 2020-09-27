@@ -1,7 +1,7 @@
 import TransitionNetwork from "./transition-network";
 import Processor from "./processor";
 import Store from "./store";
-import { LocalContext, GlobalContext } from "./contexts";
+import { LocalContext, GlobalContext, StaticContext } from "./contexts";
 import State from "./state";
 import Transition from "./transition";
 import Instruction from "./instruction";
@@ -12,6 +12,7 @@ class Automata {
     private registers: Store;
     private machineRAM: LocalContext;
     private sharedRAM: GlobalContext;
+    private ROM: StaticContext;
 
     private currentState: State = -1;
 
@@ -20,13 +21,15 @@ class Automata {
         processor: Processor,
         registers: Store,
         machineRAM: LocalContext,
-        sharedRAM: GlobalContext
+        sharedRAM: GlobalContext,    
+        ROM: StaticContext,
     ) {
         this.transitionNetwork = transitionNetwork;
         this.processor = processor;
         this.registers = registers;
         this.machineRAM = machineRAM;
         this.sharedRAM = sharedRAM;
+        this.ROM = ROM;
     }
 
     public useProcessor(processor: Processor): void {
@@ -87,7 +90,8 @@ class Automata {
                 instruction[i].registers,
                 this.registers,
                 this.machineRAM,
-                this.sharedRAM
+                this.sharedRAM,
+                this.ROM
             );
         }
     }
