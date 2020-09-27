@@ -3,7 +3,7 @@ import Microcommand from "./microcommand";
 import State from "./state";
 import Predicate from "./predicate";
 import Store from "./store";
-import { LocalContext, GlobalContext } from "./contexts";
+import { LocalContext, GlobalContext, LOCAL_CTX_LITERAL, GLOBAL_CTX_LITERAL } from "./contexts";
 import Instruction from "./instruction";
 import Transition from "./transition";
 import TransitionNetwork from "./transition-network";
@@ -23,4 +23,6 @@ export {
     TransitionNetwork,
     Processor,
     Automata,
+    GLOBAL_CTX_LITERAL,
+    LOCAL_CTX_LITERAL,
 };

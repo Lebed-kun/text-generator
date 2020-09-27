@@ -69,7 +69,11 @@ class Automata {
 
             if (condition) {
                 this.currentState = transitions[i].newState;
-                this.executeInstruction(transitions[i].callback);
+                
+                if (typeof transitions[i].callback !== "undefined") {
+                    this.executeInstruction(transitions[i].callback!);
+                }
+
                 return true;
             }
         }
@@ -79,7 +83,8 @@ class Automata {
 
     private executeInstruction(instruction: Instruction): void {
         for (let i = 0; i < instruction.length; i++) {
-            this.processor[instruction[i]](
+            this.processor[instruction[i].opCode](
+                instruction[i].registers,
                 this.registers,
                 this.machineRAM,
                 this.sharedRAM

@@ -2,7 +2,8 @@ import Store from "./store";
 import { LocalContext, GlobalContext } from "./contexts";
 
 type Microcommand = (
-    registers: Store,
+    registerNames: number[],
+    registerStore: Store,
     localContext: LocalContext,
     globalContext: GlobalContext
 ) => void;
