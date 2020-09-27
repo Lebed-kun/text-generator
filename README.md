@@ -42,7 +42,7 @@ These registers are used in the diagram below to simplify representation of stat
 * USEC %R1 %R2 - push value of R2 using global context to R1 sequence;
 * POP %R1 %R2 - pop last value from R2 sequence to R1;
 * POPA %R1 %R2 %R3 - pop arguments from R2 to R1 according to command R3;
-* CALL %R1 %R2 - call command from R1 with values from R2;
+* CALL %R1 %R2 %R3 - call command from R1 with values from R2 and return execution result to R3;
 
 ## Diagram of state machine
 

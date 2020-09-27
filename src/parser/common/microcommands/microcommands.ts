@@ -164,3 +164,41 @@ export const popArguments: Microcommand = (
         argsRegister.set(args);
     }
 }
+
+export const call: Microcommand = (
+    registerNames: number[],
+    registerStore: Store,
+    localContext: LocalContext,
+    globalContext: GlobalContext,
+    staticContext: StaticContext,
+) => {
+    const rawCommandNameRegister: Register<string> = registerStore[registerNames[1]];
+    const rawCommandName = rawCommandNameRegister.get()!;
+
+    if (rawCommandName.startsWith(LOCAL_CTX_LITERAL)) {
+        throw new Error("Runtime defined routines aren't supported now");
+    }
+
+    const rom: GlobalContext | StaticContext = rawCommandName.startsWith(GLOBAL_CTX_LITERAL) ? 
+        globalContext : staticContext;
+    const commandName = rawCommandName.startsWith(GLOBAL_CTX_LITERAL) ? 
+        rawCommandName.slice(1) : 
+        rawCommandName;
+    const command = rom[commandName];
+
+    if (typeof command === "string" || typeof command === "function") {
+        throw new Error("Invalid command type");
+    } else {
+        const argsRegister: Register<string[]> = registerStore[registerNames[2]];
+        const returnRegister: Register<string> = registerStore[registerNames[2]];
+    
+        command.routine(
+            argsRegister,
+            returnRegister,
+            localContext,
+            globalContext,
+            staticContext,
+            registerStore
+        );
+    }
+}

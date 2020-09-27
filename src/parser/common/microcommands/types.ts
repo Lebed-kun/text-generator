@@ -5,5 +5,5 @@ export enum MicrocommandNames {
     PUSH_USING_GLOBAL_CTX = 3,
     POP = 4,
     POP_ARGUMENTS = 5,
-    CALL = 6
+    CALL = 6,
 }
